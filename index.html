@@ -99,7 +99,7 @@
     <table id="tabelaCorretores">
       <thead>
         <tr>
-          <th>Selecionar</th>
+          <th><input type="checkbox" id="chkSelecionarTodos" onclick="selecionarTodos(this)"></th>
           <th>Nome</th>
           <th class="th-gerente">Gerente</th>
           <th>Apelido</th>
@@ -269,9 +269,16 @@
 
       const cco = emails.join(",");
       const assunto = "Rescisão";
-      const corpo = `Rescisão - (Estágio na validade e definitivo)%0D%0A%0D%0ABoa Tarde,%0D%0A%0D%0AVimos através da presente, reiterar que o Instrumento Particular de Acordo de Parceria Operacional em Intermediação de Venda de Bens Imóveis, anteriormente firmado junto a esta empresa, encontra-se resilido a partir da presente data, tornando-se, referido Instrumento, extinto para todos os fins e efeitos de direito.%0D%0A%0D%0ASomente na posse do cartão de acesso ao condomínio, solicitamos que compareça a Vossa Senhoria à sede da EVENMOB CONSULTORIA DE IMÓVEIS LTDA., para devolução.%0D%0A%0D%0ASalientamos que esse e-mail é a garantia do descredenciamento feito de nossa base.`;
+      const corpo = `Boa Tarde,%0D%0A%0D%0AVimos através da presente, reiterar que o Instrumento Particular de Acordo de Parceria Operacional em Intermediação de Venda de Bens Imóveis, anteriormente firmado junto a esta empresa, encontra-se resilido a partir da presente data, tornando-se, referido Instrumento, extinto para todos os fins e efeitos de direito.%0D%0A%0D%0ASomente na posse do cartão de acesso ao condomínio, solicitamos que compareça a Vossa Senhoria à sede da EVENMOB CONSULTORIA DE IMÓVEIS LTDA., para devolução.%0D%0A%0D%0ASalientamos que esse e-mail é a garantia do descredenciamento feito de nossa base.`;
 
       window.location.href = `mailto:?bcc=${encodeURIComponent(cco)}&subject=${encodeURIComponent(assunto)}&body=${corpo}`;
+    }
+
+    function selecionarTodos(masterCheckbox) {
+      const checkboxes = document.querySelectorAll('.chk-exportar');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = masterCheckbox.checked;
+      });
     }
 
     document.addEventListener('keydown', function(e) {
