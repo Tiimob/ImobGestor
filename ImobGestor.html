@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ImobGestor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #F7F9F9;
+      margin: 0;
+      padding: 20px;
+      color: #2E2A3B;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 40px 30px;
+      box-shadow: 0 6px 20px rgba(46, 42, 59, 0.1);
+      max-width: 960px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #176D66;
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    select, input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      border: 1px solid #e0e0e0;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #176D66;
+      color: white;
+      font-weight: 600;
+    }
+    button {
+      background-color: #176D66;
+      color: white;
+      padding: 12px 20px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #145c58;
+    }
+    .hidden { display: none; }
+    .botao-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ImobGestor</h2>
+
+    <label for="tipo">Tipo de Processo:</label>
+    <select id="tipo" onchange="atualizarCampos()">
+      <option value="Credenciamento">Credenciamento</option>
+      <option value="Descredenciamento">Descredenciamento</option>
+      <option value="Atualização">Atualização</option>
+    </select>
+
+    <label for="empresa">Empresa:</label>
+    <select id="empresa">
+      <option value="Even More">Even More</option>
+      <option value="Even Vendas">Even Vendas</option>
+    </select>
+
+    <table id="tabelaCorretores">
+      <thead>
+        <tr>
+          <th>Selecionar</th>
+          <th>Nome</th>
+          <th class="th-gerente">Gerente</th>
+          <th>Apelido</th>
+          <th class="th-email">E-mail</th>
+          <th class="th-atualizacao hidden">Tipo de Atualização</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox" class="chk-exportar"></td>
+          <td><input type="text" placeholder="Nome" /></td>
+          <td class="td-gerente"><input type="text" placeholder="Gerente" /></td>
+          <td><input type="text" placeholder="Apelido" /></td>
+          <td class="td-email"><input type="email" placeholder="E-mail" /></td>
+          <td class="td-atualizacao hidden"><input type="text" placeholder="Tipo de Atualização" /></td>
+          <td><button onclick="removerLinha(this)">❌</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="botao-acoes">
+      <button onclick="adicionarLinha()">➕ Adicionar Corretor</button>
+      <button onclick="enviarEmail()">Enviar</button>
+      <button onclick="exportarParaExcel()">📥 Exportar para Excel</button>
+      <button id="btnRescisao" onclick="enviarRescisao()" style="display:none;">📧 Rescisão</button>
+    </div>
+  </div>
+
+  <script>
+    function atualizarCampos() {
+      const tipo = document.getElementById('tipo').value;
+      const mostrarAtualizacao = tipo === 'Atualização';
+      const mostrarRescisao = tipo === 'Descredenciamento';
+
+      document.querySelectorAll('.th-gerente, .td-gerente, .th-email, .td-email').forEach(el => {
+        el.style.display = mostrarAtualizacao ? 'none' : '';
+      });
+      document.querySelectorAll('.th-atualizacao, .td-atualizacao').forEach(el => {
+        el.classList.toggle('hidden', !mostrarAtualizacao);
+      });
+
+      document.getElementById('btnRescisao').style.display = mostrarRescisao ? 'inline-block' : 'none';
+    }
+
+    function adicionarLinha() {
+      const tabela = document.querySelector("#tabelaCorretores tbody");
+      const linha = document.createElement("tr");
+      linha.innerHTML = `
+        <td><input type="checkbox" class="chk-exportar"></td>
+        <td><input type="text" placeholder="Nome"></td>
+        <td class="td-gerente"><input type="text" placeholder="Gerente"></td>
+        <td><input type="text" placeholder="Apelido"></td>
+        <td class="td-email"><input type="email" placeholder="E-mail"></td>
+        <td class="td-atualizacao hidden"><input type="text" placeholder="Tipo de Atualização"></td>
+        <td><button onclick="removerLinha(this)">❌</button></td>
+      `;
+      tabela.appendChild(linha);
+      atualizarCampos();
+    }
+
+    function removerLinha(botao) {
+      const linha = botao.closest("tr");
+      linha.remove();
+    }
+
+    function enviarEmail() {
+      const tipo = document.getElementById('tipo').value;
+      const empresa = document.getElementById('empresa').value;
+      const linhas = document.querySelectorAll("#tabelaCorretores tbody tr");
+      let corpo = `Empresa: ${empresa}%0D%0ATipo de Processo: ${tipo}%0D%0A%0D%0ACorretores:%0D%0A`;
+
+      linhas.forEach((linha, index) => {
+        const campos = linha.querySelectorAll("input");
+        const nome = campos[1].value.trim();
+        const gerente = campos[2]?.value.trim();
+        const apelido = campos[3].value.trim();
+        const email = campos[4]?.value.trim();
+        const atualizacao = campos[5]?.value.trim();
+
+        if (nome || apelido || email || atualizacao) {
+          corpo += `${index + 1}. Nome: ${nome} | Apelido: ${apelido}`;
+          if (tipo !== 'Atualização') {
+            corpo += ` | Gerente: ${gerente} | E-mail: ${email}`;
+          } else {
+            corpo += ` | Tipo de Atualização: ${atualizacao}`;
+          }
+          corpo += `%0D%0A`;
+        }
+      });
+
+      const assunto = `${tipo} - Corretores (${empresa})`;
+      const destinatario = "tiimob@evenimob.com.br";
+      window.location.href = `mailto:${destinatario}?subject=${encodeURIComponent(assunto)}&body=${corpo}`;
+    }
+
+    function exportarParaExcel() {
+      const tipo = document.getElementById('tipo').value;
+      const linhas = document.querySelectorAll("#tabelaCorretores tbody tr");
+      let dados = [];
+      let selecionado = 0;
+
+      if (tipo === "Atualização") {
+        dados.push(["Nome", "Apelido", "Tipo de Atualização"]);
+      } else {
+        dados.push(["Nome", "Apelido", "E-mail", "Gerente"]);
+      }
+
+      linhas.forEach(linha => {
+        const chk = linha.querySelector(".chk-exportar");
+        if (chk && chk.checked) {
+          const campos = linha.querySelectorAll("input");
+          const nome = campos[1].value.trim();
+          const gerente = campos[2]?.value.trim();
+          const apelido = campos[3].value.trim();
+          const email = campos[4]?.value.trim();
+          const atualizacao = campos[5]?.value.trim();
+
+          if (tipo === "Atualização") {
+            if (nome || apelido || atualizacao) {
+              dados.push([nome, apelido, atualizacao]);
+              selecionado++;
+            }
+          } else {
+            if (email) {
+              dados.push([nome, apelido, email, gerente]);
+              selecionado++;
+            }
+          }
+        }
+      });
+
+      if (selecionado === 0) {
+        alert("Nenhum corretor selecionado ou com dados válidos.");
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8," + dados.map(e => e.join(";")).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `${tipo.toLowerCase()}_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function enviarRescisao() {
+      const tipo = document.getElementById('tipo').value;
+      if (tipo !== 'Descredenciamento') return;
+
+      const linhas = document.querySelectorAll("#tabelaCorretores tbody tr");
+      let emails = [];
+
+      linhas.forEach(linha => {
+        const chk = linha.querySelector(".chk-exportar");
+        if (chk && chk.checked) {
+          const email = linha.querySelectorAll("input")[4].value.trim();
+          if (email) emails.push(email);
+        }
+      });
+
+      if (emails.length === 0) {
+        alert("Nenhum e-mail selecionado.");
+        return;
+      }
+
+      const cco = emails.join(",");
+      const assunto = "Rescisão";
+      const corpo = `Rescisão - (Estágio na validade e definitivo)%0D%0A%0D%0ABoa Tarde,%0D%0A%0D%0AVimos através da presente, reiterar que o Instrumento Particular de Acordo de Parceria Operacional em Intermediação de Venda de Bens Imóveis, anteriormente firmado junto a esta empresa, encontra-se resilido a partir da presente data, tornando-se, referido Instrumento, extinto para todos os fins e efeitos de direito.%0D%0A%0D%0ASomente na posse do cartão de acesso ao condomínio, solicitamos que compareça a Vossa Senhoria à sede da EVENMOB CONSULTORIA DE IMÓVEIS LTDA., para devolução.%0D%0A%0D%0ASalientamos que esse e-mail é a garantia do descredenciamento feito de nossa base.`;
+
+      window.location.href = `mailto:?bcc=${encodeURIComponent(cco)}&subject=${encodeURIComponent(assunto)}&body=${corpo}`;
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+        e.preventDefault();
+        adicionarLinha();
+      }
+    });
+  </script>
+</body>
+</html>
