@@ -29,10 +29,6 @@ A proposta é centralizar ações e facilitar o dia a dia, reduzindo erros e aum
 
 Este projeto foi desenvolvido como iniciativa prática para aprimorar conhecimentos em desenvolvimento web e criar soluções aplicáveis a cenários reais.
 
-## 📷 Preview
-
-*(adicione aqui prints da tela depois — isso valoriza MUITO)*
-
 ## 📈 Melhorias futuras
 
 - Validação de dados
