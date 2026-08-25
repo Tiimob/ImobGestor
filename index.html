@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#002D28" />
+  <title>ImobGestor</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png" />
+  <style>
+    :root {
+      --verde: #002D28;
+      --verde-escuro: #001F1C;
+      --verde-claro: #E7F1EF;
+      --fundo: #F4F7F6;
+      --texto: #1E2927;
+      --cinza: #66716F;
+      --borda: #D7E0DE;
+      --branco: #FFFFFF;
+      --vermelho: #B42318;
+      --vermelho-claro: #FFF1F0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 14px;
+      background: var(--verde);
+      color: var(--texto);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      background: var(--branco);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.16);
+    }
+
+    .cabecalho {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+
+    .cabecalho img {
+      width: 170px;
+      max-width: 60%;
+      height: auto;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--verde);
+      font-size: 28px;
+    }
+
+    .subtitulo {
+      margin: 6px 0 0;
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    .configuracao {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--verde);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #C8D2D0;
+      border-radius: 9px;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--texto);
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(0,45,40,.09);
+    }
+
+    input.erro {
+      border-color: var(--vermelho);
+      box-shadow: 0 0 0 3px rgba(180,35,24,.08);
+    }
+
+    .titulo-lista {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .titulo-lista h2 {
+      margin: 0;
+      color: var(--verde);
+      font-size: 18px;
+    }
+
+    .contador {
+      color: var(--cinza);
+      font-size: 13px;
+    }
+
+    .lista {
+      display: grid;
+      gap: 10px;
+    }
+
+    .corretor {
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .corretor-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .corretor-topo strong {
+      color: var(--verde);
+      font-size: 14px;
+    }
+
+    .campos {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .remover {
+      border: 0;
+      background: transparent;
+      color: var(--vermelho);
+      font-weight: 700;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    .acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      min-height: 44px;
+      border-radius: 9px;
+      padding: 10px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-principal {
+      flex: 1 1 220px;
+      border: 1px solid var(--verde);
+      background: var(--verde);
+      color: #fff;
+    }
+
+    .btn-principal:hover { background: var(--verde-escuro); }
+
+    .btn-secundario {
+      border: 1px solid #AFC1BD;
+      background: #fff;
+      color: var(--verde);
+    }
+
+    .btn-secundario:hover { background: var(--verde-claro); }
+
+    .btn-perigo {
+      border: 1px solid #F0BBB5;
+      background: var(--vermelho-claro);
+      color: var(--vermelho);
+    }
+
+    .oculto { display: none !important; }
+
+    .aviso {
+      margin: 18px 0 0;
+      color: var(--cinza);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .rodape {
+      text-align: center;
+      color: rgba(255,255,255,.7);
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .container { padding: 18px; border-radius: 12px; }
+      .configuracao { grid-template-columns: 1fr; }
+      .campos { grid-template-columns: 1fr 1fr; }
+      .acoes { display: grid; grid-template-columns: 1fr; }
+      .btn-principal, .btn-secundario, .btn-perigo { width: 100%; }
+    }
+
+    @media (max-width: 500px) {
+      .campos { grid-template-columns: 1fr; }
+      h1 { font-size: 24px; }
+      .cabecalho img { width: 150px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header class="cabecalho">
+      <img src="logo.png" alt="Even Vendas" />
+      <h1>ImobGestor</h1>
+      <p class="subtitulo">Movimentação de corretores</p>
+    </header>
+
+    <section class="configuracao">
+      <div>
+        <label for="tipo">Processo</label>
+        <select id="tipo">
+          <option value="Credenciamento">Credenciamento</option>
+          <option value="Descredenciamento">Descredenciamento</option>
+          <option value="Atualização">Atualização</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="empresa">Empresa</label>
+        <select id="empresa">
+          <option value="Even Vendas">Even Vendas</option>
+          <option value="Even RJ">Even RJ</option>
+        </select>
+      </div>
+    </section>
+
+    <section>
+      <div class="titulo-lista">
+        <h2>Corretores</h2>
+        <span class="contador" id="contador">1 corretor</span>
+      </div>
+      <div class="lista" id="listaCorretores"></div>
+    </section>
+
+    <div class="acoes">
+      <button class="btn-secundario" type="button" id="btnAdicionar">+ Adicionar corretor</button>
+      <button class="btn-principal" type="button" id="btnEmail">Gerar e-mail para o TI</button>
+      <button class="btn-secundario" type="button" id="btnExportar">Exportar planilha</button>
+      <button class="btn-perigo oculto" type="button" id="btnRescisao">Gerar rescisão</button>
+    </div>
+
+    <p class="aviso">Não informe senhas, tokens ou códigos de autenticação.</p>
+  </main>
+
+  <div class="rodape">ImobGestor • versão 2.1.0</div>
+
+  <script>
+    const DESTINATARIO_TI = 'tiimob@evenimob.com.br';
+    let proximoId = 1;
+    let registros = [criarRegistro()];
+
+    function criarRegistro() {
+      return {
+        id: proximoId++,
+        nome: '',
+        gerente: '',
+        apelido: '',
+        email: '',
+        atualizacao: ''
+      };
+    }
+
+    function escaparHtml(valor = '') {
+      return String(valor).replace(/[&<>'"]/g, c => ({
+        '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;'
+      }[c]));
+    }
+
+    function processoAtual() {
+      return document.getElementById('tipo').value;
+    }
+
+    function registroTemConteudo(r) {
+      return [r.nome, r.gerente, r.apelido, r.email, r.atualizacao]
+        .some(v => String(v || '').trim());
+    }
+
+    function renderizar() {
+      const lista = document.getElementById('listaCorretores');
+      const atualizacao = processoAtual() === 'Atualização';
+
+      lista.innerHTML = registros.map((r, i) => `
+        <article class="corretor" data-card="${r.id}">
+          <div class="corretor-topo">
+            <strong>Corretor ${i + 1}</strong>
+            <button class="remover" type="button" data-remover="${r.id}">Remover</button>
+          </div>
+
+          <div class="campos">
+            <div>
+              <label>Nome</label>
+              <input type="text" data-id="${r.id}" data-campo="nome" value="${escaparHtml(r.nome)}" placeholder="Nome completo" />
+            </div>
+
+            <div>
+              <label>Apelido</label>
+              <input type="text" data-id="${r.id}" data-campo="apelido" value="${escaparHtml(r.apelido)}" placeholder="Apelido" />
+            </div>
+
+            ${atualizacao ? `
+              <div style="grid-column: span 2;">
+                <label>Tipo de atualização</label>
+                <input type="text" data-id="${r.id}" data-campo="atualizacao" value="${escaparHtml(r.atualizacao)}" placeholder="Ex.: alteração de gerente" />
+              </div>
+            ` : `
+              <div>
+                <label>Gerente</label>
+                <input type="text" data-id="${r.id}" data-campo="gerente" value="${escaparHtml(r.gerente)}" placeholder="Gerente" />
+              </div>
+
+              <div>
+                <label>E-mail</label>
+                <input type="email" data-id="${r.id}" data-campo="email" value="${escaparHtml(r.email)}" placeholder="E-mail" />
+              </div>
+            `}
+          </div>
+        </article>
+      `).join('');
+
+      document.getElementById('contador').textContent = `${registros.length} corretor${registros.length === 1 ? '' : 'es'}`;
+      document.getElementById('btnRescisao').classList.toggle('oculto', processoAtual() !== 'Descredenciamento');
+    }
+
+    function atualizarRegistro(id, campo, valor) {
+      const registro = registros.find(r => r.id === id);
+      if (registro) registro[campo] = valor;
+    }
+
+    function adicionarRegistro() {
+      registros.push(criarRegistro());
+      renderizar();
+      setTimeout(() => {
+        document.querySelector(`[data-id="${registros.at(-1).id}"][data-campo="nome"]`)?.focus();
+      }, 0);
+    }
+
+    function removerRegistro(id) {
+      if (registros.length === 1) {
+        registros = [criarRegistro()];
+      } else {
+        registros = registros.filter(r => r.id !== id);
+      }
+      renderizar();
+    }
+
+    function emailValido(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function obterRegistrosValidos() {
+      document.querySelectorAll('input.erro').forEach(el => el.classList.remove('erro'));
+
+      const preenchidos = registros.filter(registroTemConteudo);
+      if (!preenchidos.length) {
+        alert('Preencha pelo menos um corretor.');
+        return null;
+      }
+
+      const atualizacao = processoAtual() === 'Atualização';
+      const erros = [];
+
+      preenchidos.forEach(r => {
+        const obrigatorios = atualizacao
+          ? ['nome', 'apelido', 'atualizacao']
+          : ['nome', 'apelido', 'gerente', 'email'];
+
+        obrigatorios.forEach(campo => {
+          if (!String(r[campo] || '').trim()) erros.push({ id: r.id, campo });
+        });
+
+        if (!atualizacao && r.email && !emailValido(r.email)) {
+          erros.push({ id: r.id, campo: 'email' });
+        }
+      });
+
+      if (erros.length) {
+        erros.forEach(({id, campo}) => {
+          document.querySelector(`[data-id="${id}"][data-campo="${campo}"]`)?.classList.add('erro');
+        });
+        alert('Revise os campos destacados antes de continuar.');
+        return null;
+      }
+
+      return preenchidos;
+    }
+
+    function corpoEmail(lista) {
+      const empresa = document.getElementById('empresa').value;
+      const tipo = processoAtual();
+      const linhas = [
+        `Empresa: ${empresa}`,
+        `Processo: ${tipo}`,
+        '',
+        'Corretores:'
+      ];
+
+      lista.forEach((r, i) => {
+        linhas.push('');
+        linhas.push(`${i + 1}. ${r.nome}`);
+        linhas.push(`Apelido: ${r.apelido}`);
+        if (tipo === 'Atualização') {
+          linhas.push(`Atualização: ${r.atualizacao}`);
+        } else {
+          linhas.push(`Gerente: ${r.gerente}`);
+          linhas.push(`E-mail: ${r.email}`);
+        }
+      });
+
+      linhas.push('', 'Solicitação gerada pelo ImobGestor.');
+      return linhas.join('\r\n');
+    }
+
+    function gerarEmail() {
+      const lista = obterRegistrosValidos();
+      if (!lista) return;
+
+      const empresa = document.getElementById('empresa').value;
+      const tipo = processoAtual();
+      const ok = confirm(`${tipo} • ${empresa}\n${lista.length} corretor${lista.length === 1 ? '' : 'es'}\n\nGerar e-mail para o TI?`);
+      if (!ok) return;
+
+      const assunto = `${tipo} - Corretores (${empresa})`;
+      window.location.href = `mailto:${DESTINATARIO_TI}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpoEmail(lista))}`;
+    }
+
+    function csvEscape(valor) {
+      return `"${String(valor ?? '').replace(/"/g, '""')}"`;
+    }
+
+    function exportarPlanilha() {
+      const lista = obterRegistrosValidos();
+      if (!lista) return;
+
+      const empresa = document.getElementById('empresa').value;
+      const tipo = processoAtual();
+      const atualizacao = tipo === 'Atualização';
+      const linhas = [atualizacao
+        ? ['Empresa', 'Processo', 'Nome', 'Apelido', 'Tipo de Atualização']
+        : ['Empresa', 'Processo', 'Nome', 'Apelido', 'Gerente', 'E-mail']
+      ];
+
+      lista.forEach(r => {
+        linhas.push(atualizacao
+          ? [empresa, tipo, r.nome, r.apelido, r.atualizacao]
+          : [empresa, tipo, r.nome, r.apelido, r.gerente, r.email]
+        );
+      });
+
+      const csv = '\uFEFF' + linhas.map(row => row.map(csvEscape).join(';')).join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `imobgestor_${tipo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function gerarRescisao() {
+      if (processoAtual() !== 'Descredenciamento') return;
+      const lista = obterRegistrosValidos();
+      if (!lista) return;
+
+      const empresa = document.getElementById('empresa').value;
+      const emails = lista.map(r => r.email).filter(Boolean);
+      const ok = confirm(`Descredenciamento • ${empresa}\n${lista.length} corretor${lista.length === 1 ? '' : 'es'}\n\nGerar e-mail de rescisão?`);
+      if (!ok) return;
+
+      const assunto = `Rescisão - ${empresa}`;
+      const corpo = [
+        'Boa Tarde,',
+        '',
+        'Vimos através da presente, reiterar que o Instrumento Particular de Acordo de Parceria Operacional em Intermediação de Venda de Bens Imóveis, anteriormente firmado junto a esta empresa, encontra-se resilido a partir da presente data.',
+        '',
+        'Somente na posse do cartão de acesso ao condomínio, solicitamos comparecimento para devolução.',
+        '',
+        'Salientamos que esse e-mail é a garantia do descredenciamento feito de nossa base.'
+      ].join('\r\n');
+
+      window.location.href = `mailto:?bcc=${encodeURIComponent(emails.join(';'))}&subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+    }
+
+    document.getElementById('tipo').addEventListener('change', renderizar);
+    document.getElementById('btnAdicionar').addEventListener('click', adicionarRegistro);
+    document.getElementById('btnEmail').addEventListener('click', gerarEmail);
+    document.getElementById('btnExportar').addEventListener('click', exportarPlanilha);
+    document.getElementById('btnRescisao').addEventListener('click', gerarRescisao);
+
+    document.addEventListener('input', e => {
+      const id = Number(e.target.dataset.id);
+      const campo = e.target.dataset.campo;
+      if (!id || !campo) return;
+      atualizarRegistro(id, campo, e.target.value);
+      e.target.classList.remove('erro');
+    });
+
+    document.addEventListener('click', e => {
+      const botao = e.target.closest('[data-remover]');
+      if (botao) removerRegistro(Number(botao.dataset.remover));
+    });
+
+    renderizar();
+  </script>
+</body>
+</html>

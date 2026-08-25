@@ -1,0 +1,12 @@
+ImobGestor 2.1.0
+Data: 25/08/2026
+
+- Interface simplificada.
+- Nome padronizado como ImobGestor.
+- Removidos cards de processo, indicadores e modal de revisão.
+- Processo e empresa agora usam seletores simples.
+- Removidos checkboxes de seleção: todos os registros preenchidos entram na ação.
+- Mantidas Even Vendas e Even RJ.
+- Even More permanece removida.
+- Mantidas validações, exportação CSV e geração de e-mail/rescisão.
+- Layout responsivo simplificado para desktop e celular.
