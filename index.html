@@ -508,11 +508,13 @@
       const corpo = [
         'Boa Tarde,',
         '',
-        'Vimos através da presente, reiterar que o Instrumento Particular de Acordo de Parceria Operacional em Intermediação de Venda de Bens Imóveis, anteriormente firmado junto a esta empresa, encontra-se resilido a partir da presente data.',
+        'Por meio desta, informamos que o Instrumento Particular de Acordo de Parceria Operacional em Intermediação de Venda de Bens Imóveis, anteriormente firmado com esta empresa, encontra-se rescindido a partir desta data.',
         '',
-        'Somente na posse do cartão de acesso ao condomínio, solicitamos comparecimento para devolução.',
+        'Caso esteja em posse de cartão de acesso ao condomínio, solicitamos o comparecimento para sua devolução.',
         '',
-        'Salientamos que esse e-mail é a garantia do descredenciamento feito de nossa base.'
+        'Ressaltamos que este e-mail constitui o comprovante formal de seu descredenciamento de nossa base de parceiros.'
+        '',
+        'Atenciosamente,'
       ].join('\r\n');
 
       window.location.href = `mailto:?bcc=${encodeURIComponent(emails.join(';'))}&subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
